@@ -41,7 +41,7 @@
     </developers>
 
     <properties>
-        <rpcman.version>0.0.4-RELEASE</rpcman.version>
+        <rpcman.version>0.0.5-RELEASE</rpcman.version>
         <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.tagret>17</maven.compiler.tagret>
