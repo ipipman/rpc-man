@@ -1,0 +1,42 @@
+server:
+  port: 8088
+
+rpcman:
+  #providers: http://localhost:8080,http://localhost:8081,http://localhost:8082
+  zk:
+    zkServer: localhost:2183
+    zkRoot: rpcman
+
+  app:
+    id: app1
+    namespace: public
+    env: dev
+    version: 1.0
+    use-netty: false
+
+  consumer:
+    retries: 2
+    timeout: 200
+    gray-ratio: 33 # 灰度百分比 0-100
+    fault-limit: 10 # 30s 内10次错误则隔离
+    half-open-initial-delay: 10000 # 半开启初始延迟
+    half-open-delay: 60000
+
+# apollo 配置中心
+app:
+  id: app
+apollo:
+  cacheDir: /opt/data/
+  cluster: default
+  meta: http://localhost:8080
+  autoUpdateInjectedSpringProperties: true # 是否自动更新
+  bootstrap:
+    enabled: true
+    namespaces: rpcman-app
+    eagerLoad:
+      enabled: false
+
+logging:
+  level:
+    root: info
+    cn.ipman.rpc: debug

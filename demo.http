@@ -1,0 +1,31 @@
+### 用于测试超时重试
+GET http://localhost:8088/find/?timeout=1100
+
+### 用于测试LoadBanlance
+GET http://localhost:8088/api/?id=101
+
+### 用于测试探活
+GET http://localhost:8081/ports?ports=8082
+
+### 用于测试Apollo配置更新
+GET http://localhost:8081/metas
+
+### 获取用户信息
+POST http://192.168.31.232:9081/rpcman
+Content-Type: application/json
+
+{
+  "service": "cn.ipman.rpc.demo.api.UserService",
+  "methodSign": "findById@1_int",
+  "args": [100]
+}
+
+### 获取订单信息
+POST http://localhost:8080/
+Content-Type: application/json
+
+{
+  "service": "cn.ipman.rpc.demo.api.UserService",
+  "methodSign": "findById@2_int_java.lang.String",
+  "args": [200, "ipman"]
+}

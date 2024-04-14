@@ -1,0 +1,40 @@
+server:
+  port: 8080
+
+rpcman:
+  zk:
+    zkServer: localhost:2182
+    zkRoot: rpcman
+
+  app:
+    id: app1
+    namespace: public
+    env: dev
+    version: 1.0
+    use-netty: true # open port = server.port + 1000
+
+  provider:
+    metas:
+      dc: bj
+      gray: false
+      unit: B001
+      tc: 300  # 流量控制器, 默认30s内访问20次
+
+# apollo 配置中心
+app:
+  id: app
+apollo:
+  cacheDir: /opt/data/
+  cluster: default
+  meta: http://localhost:8080
+  autoUpdateInjectedSpringProperties: true # 是否自动更新
+  bootstrap:
+    enabled: true
+    namespaces: rpcman-app
+    eagerLoad:
+      enabled: false
+
+logging:
+  level:
+    root: error
+    cn.ipman.rpc: info
