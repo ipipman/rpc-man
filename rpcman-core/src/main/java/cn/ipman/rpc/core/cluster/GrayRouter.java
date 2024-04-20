@@ -10,6 +10,7 @@ import java.util.Random;
 
 /**
  * 灰度发布路由类
+ * 用于在服务调用时，根据指定的灰度比例选择是路由到灰度实例还是正常实例。
  *
  * @Author IpMan
  * @Date 2024/3/31 21:49
@@ -17,23 +18,36 @@ import java.util.Random;
 @Slf4j
 public class GrayRouter implements Router<InstanceMeta> {
 
-    private final int grayRatio;
-    private final Random random = new Random();
+    private final int grayRatio; // 灰度比例
+    private final Random random = new Random();  // 用于随机选择
 
+    /**
+     * 灰度路由器构造函数
+     *
+     * @param grayRatio 灰度比例，表示灰度实例被选中的概率。
+     */
     public GrayRouter(int grayRatio) {
         this.grayRatio = grayRatio;
     }
 
+    /**
+     * 根据灰度比例从服务提供者列表中路由选择实例。
+     *
+     * @param providers 服务提供者列表。
+     * @return 路由选择后的实例列表。
+     */
     @Override
     public List<InstanceMeta> route(List<InstanceMeta> providers) {
+        // 如果列表为空或只有一个实例，直接返回
         if (providers == null || providers.size() <= 1) {
             return providers;
         }
-        // 正常的节点
+
+        // 分别初始化正常节点和灰度节点列表
         List<InstanceMeta> normalNodes = new ArrayList<>();
-        // 灰度的节点
         List<InstanceMeta> grayNodes = new ArrayList<>();
 
+        // 根据实例的灰度标志，将实例分到正常或灰度节点列表
         providers.forEach(p -> {
             if ("true".equals(p.getParameters().get("gray"))) {
                 grayNodes.add(p);
@@ -42,16 +56,15 @@ public class GrayRouter implements Router<InstanceMeta> {
             }
         });
 
+        // 如果正常和灰度节点都为空，返回原列表
         if (normalNodes.isEmpty() || grayNodes.isEmpty()) return providers;
-        // 如果灰度比例是10
         if (grayRatio <= 0) {
-            return normalNodes;
+            return normalNodes; // 灰度比例为0或负数时，返回正常节点
         } else if (grayRatio >= 100) {
-            return grayNodes;
+            return grayNodes;   // 灰度比例为100或更大时，返回灰度节点
         }
 
-        // 再A的情况下, 返回 normal nodes, ==> 不管LB的算法情况下, 一定是normal
-        // B的情况下, 返回 gray nodes ==> 不管LB不管算法情况下, 一定是gray
+        // 随机决定返回灰度节点还是正常节点
         if (random.nextInt(100) < grayRatio) {
             log.debug(" grayRoute grayNodes ===> {}", grayRatio);
             return grayNodes;
