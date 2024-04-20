@@ -18,10 +18,8 @@ import java.util.Map;
 @ToString
 public class RpcRequest {
 
-    private String service; // 接口, 如: cn.ipman.rpc.demo.api.UserService
-    private String methodSign; // 方法签名
-    private Object[] args; // 方法参数
-
-    // 跨调用方需要传递的参数
-    private Map<String, String> params = new HashMap<>();
+    private String service;         // 接口, 如: cn.ipman.rpc.demo.api.UserService
+    private String methodSign;      // 方法签名
+    private Object[] args;          // 方法参数
+    private Map<String, String> params = new HashMap<>(); // 额外传递的参数
 }

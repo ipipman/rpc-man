@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 
 /**
- * RPC 响应体
+ * RPC响应结构体
  *
  * @Author IpMan
  * @Date 2024/3/9 20:07
@@ -18,8 +18,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RpcResponse<T> {
 
-    boolean status; // 状态:true
-    T data; // new User
-    RpcException ex;
+    boolean status;     // 状态:true
+    T data;             // 如: new User
+    RpcException ex;    // RPC异常类
 
 }
