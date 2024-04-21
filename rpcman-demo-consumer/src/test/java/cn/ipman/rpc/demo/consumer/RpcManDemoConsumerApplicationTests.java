@@ -20,7 +20,7 @@ import org.springframework.core.env.Environment;
  * @Date 2024/3/26 22:22
  */
 @SpringBootTest(classes = {RpcmanDemoConsumerApplication.class},
-         properties = {"rpcman.zk.zkServer=localhost:2183"})
+         properties = {"rpcman.zk.zkServer=localhost:2183", "rpcman.zk.enabled=true", "registry-ipman.enabled=false"})
 public class RpcManDemoConsumerApplicationTests {
 
     static ApplicationContext context1;
@@ -61,10 +61,12 @@ public class RpcManDemoConsumerApplicationTests {
                 "--logging.level.cn.ipman=debug",
                 "--rpcman.app.useNetty=true",
                 "--rpcman.zk.zkServer=localhost:2183",
+                "--rpcman.zk.enabled=true",
                 "--rpcman.provider.metas.dc=bj",
                 "--rpcman.provider.metas.gray=false",
                 "--rpcman.provider.metas.unit=B002",
-                "--rpcman.provider.metas.tc=300"
+                "--rpcman.provider.metas.tc=300",
+                "--registry-ipman.enabled=false"
         );
 
         System.out.println(" ================================ ");
@@ -76,10 +78,12 @@ public class RpcManDemoConsumerApplicationTests {
                 "--logging.level.cn.ipman=debug",
                 "--rpcman.app.useNetty=true",
                 "--rpcman.zk.zkServer=localhost:2183",
+                "--rpcman.zk.enabled=true",
                 "--rpcman.provider.metas.dc=bj",
                 "--rpcman.provider.metas.gray=false",
                 "--rpcman.provider.metas.unit=B002",
-                "--rpcman.provider.metas.tc=300"
+                "--rpcman.provider.metas.tc=300",
+                "--registry-ipman.enabled=false"
         );
     }
 

@@ -11,7 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+@SpringBootTest(classes = {RpcmanDemoProviderApplication.class},
+        properties = {"rpcman.zk.enabled=true", "registry-ipman.enabled=false"})
 @ExtendWith(MockApolloExtension.class)
 class RpcmanDemoProviderApplicationTests {
 
