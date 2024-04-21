@@ -4,6 +4,7 @@ server:
 rpcman:
   #providers: http://localhost:8080,http://localhost:8081,http://localhost:8082
   zk:
+    enabled: false
     zkServer: localhost:2181
     zkRoot: rpcman
 

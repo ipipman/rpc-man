@@ -4,6 +4,7 @@ import cn.ipman.rpc.core.api.RpcRequest;
 import cn.ipman.rpc.core.api.RpcResponse;
 import cn.ipman.rpc.core.config.ProviderConfig;
 import cn.ipman.rpc.core.config.ProviderConfigProperties;
+import cn.ipman.rpc.core.config.RegistryCenterConfig;
 import cn.ipman.rpc.core.transport.SpringBootTransport;
 import cn.ipman.rpc.demo.api.User;
 import cn.ipman.rpc.demo.api.UserService;
@@ -26,7 +27,7 @@ import java.util.Map;
 
 @SpringBootApplication
 @RestController
-@Import({ProviderConfig.class})
+@Import({ProviderConfig.class, RegistryCenterConfig.class})
 @EnableApolloConfig
 @Slf4j
 public class RpcmanDemoProviderApplication {

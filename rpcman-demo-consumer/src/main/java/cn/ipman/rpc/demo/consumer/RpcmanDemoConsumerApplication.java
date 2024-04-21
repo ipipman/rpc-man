@@ -3,6 +3,7 @@ package cn.ipman.rpc.demo.consumer;
 import cn.ipman.rpc.core.annotation.RpcConsumer;
 import cn.ipman.rpc.core.api.RpcContext;
 import cn.ipman.rpc.core.config.ConsumerConfig;
+import cn.ipman.rpc.core.config.RegistryCenterConfig;
 import cn.ipman.rpc.demo.api.OrderService;
 import cn.ipman.rpc.demo.api.User;
 import cn.ipman.rpc.demo.api.UserService;
@@ -21,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 @SpringBootApplication
-@Import({ConsumerConfig.class})
+@Import({ConsumerConfig.class, RegistryCenterConfig.class})
 @RestController
 public class RpcmanDemoConsumerApplication {
 

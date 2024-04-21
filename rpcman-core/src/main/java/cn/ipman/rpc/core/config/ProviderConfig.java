@@ -84,16 +84,15 @@ public class ProviderConfig {
         };
     }
 
-    /**
-     * 创建注册中心Bean，如果容器中不存在则创建一个新的ZkRegistryCenter实例。
-     *
-     * @return RegistryCenter 注册中心实例。
-     */
-    @Bean
-    @ConditionalOnMissingBean
-    public RegistryCenter consumer_rc() {
-        return new ZkRegistryCenter();
-    }
+//    /**
+//     * 创建注册中心实例，默认为ZkRegistryCenter。
+//     * @return RegistryCenter 注册中心实例
+//     */
+//    @Bean(initMethod = "start", destroyMethod = "stop")
+//    @ConditionalOnMissingBean
+//    public RegistryCenter providerRc() {
+//        return new ZkRegistryCenter();
+//    }
 
     /**
      * 创建Netty服务器Bean，用于提供HTTP服务。

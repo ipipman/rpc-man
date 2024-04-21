@@ -99,7 +99,7 @@ public class IpManRegistryCenter implements RegistryCenter {
     }
 
     private String findAllPath(ServiceMeta service) {
-        return server + "/findAll?service=" + service.toPath();
+        return server + "/findall?service=" + service.toPath();
     }
 
     private String versionPath(ServiceMeta service) {

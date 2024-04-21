@@ -96,15 +96,15 @@ public class ConsumerConfig {
         return new GrayRouter(consumerConfigProperties.getGrayRatio());
     }
 
-    /**
-     * 创建注册中心实例，默认为ZkRegistryCenter。
-     * @return RegistryCenter 注册中心实例
-     */
-    @Bean(initMethod = "start", destroyMethod = "stop")
-    @ConditionalOnMissingBean
-    public RegistryCenter consumerRc() {
-        return new ZkRegistryCenter();
-    }
+//    /**
+//     * 创建注册中心实例，默认为ZkRegistryCenter。
+//     * @return RegistryCenter 注册中心实例
+//     */
+//    @Bean(initMethod = "start", destroyMethod = "stop")
+//    @ConditionalOnMissingBean
+//    public RegistryCenter consumerRc() {
+//        return new ZkRegistryCenter();
+//    }
 
 
     /**

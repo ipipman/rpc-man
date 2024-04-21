@@ -3,6 +3,7 @@ server:
 
 rpcman:
   zk:
+    enabled: true
     zkServer: localhost:2182
     zkRoot: rpcman
 
@@ -36,7 +37,7 @@ apollo:
 
 # 作者手写的注册中心:https://github.com/ipipman/registry-man
 registry-ipman:
-  enabled: true
+  enabled: false
   servers: http://localhost:8484
 
 logging:

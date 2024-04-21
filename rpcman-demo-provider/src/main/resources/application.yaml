@@ -3,6 +3,7 @@ server:
 
 rpcman:
   zk:
+    enabled: false
     zkServer: localhost:2181
     zkRoot: rpcman
 
