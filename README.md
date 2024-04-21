@@ -41,6 +41,61 @@ RPC概念与价值：简述远程过程调用（RPC）的基本概念、工作�
 2. 部署与运维：提供框架的部署指南，包括环境准备、配置说明、服务启动与停止等操作步骤，以及日志监控、故障排查等运维建议。
 
 
+### 关于Consumer的配置
+| **配置项** | **值** | **功能说明** |
+| --- | --- | --- |
+| `server.port` | `8088` | 消费者端服务监听端口，用于接收和处理外部请求。 |
+| `rpcman.zk.zkServer` | `localhost:2181` | ZooKeeper服务器地址，用于服务注册与发现、配置管理等分布式协调功能。 |
+| `rpcman.zk.zkRoot` | `rpcman` | 在ZooKeeper中使用的根节点路径，用于组织RPC相关的节点数据。 |
+| `rpcman.app.id` | `app1` | 应用ID，标识当前消费者所属的应用实例，参与服务发现与调用。 |
+| `rpcman.app.namespace` | `public` | 配置命名空间，用于区分不同环境或模块的配置数据。 |
+| `rpcman.app.env` | `dev` | 环境标识，如开发（dev）、测试（test）、生产（prod）等，影响资源配置和行为。 |
+| `rpcman.app.version` | `1.0` | 应用版本号，便于管理和区分不同版本的服务实例。 |
+| `rpcman.app.use-netty` | `false` | 是否使用Netty作为网络通信框架。此处设置为`false`，表示不使用Netty。 |
+| `rpcman.consumer.retries` | `3` | 调用远程服务时的最大重试次数，遇到故障时尝试重新连接和发送请求。 |
+| `rpcman.consumer.timeout` | `300` | 调用远程服务的超时时间（单位：毫秒），超过此时间仍未收到响应则视为失败。 |
+| `rpcman.consumer.gray-ratio` | `33` | 灰度发布比例（0-100%），指定部分流量访问新版本服务，用于渐进式上线和风险控制。 |
+| `rpcman.consumer.fault-limit` | `10` | 服务熔断阈值，在30秒内连续发生10次错误，则触发服务熔断，停止对该服务的请求。 |
+| `rpcman.consumer.half-open-initial-delay` | `10000` | 服务熔断后进入半开状态的初始延迟时间（单位：毫秒），在此期间不会尝试重新连接。 |
+| `rpcman.consumer.half-open-delay` | `60000` | 半开状态下每次尝试重新连接的间隔时间（单位：毫秒），用于探测服务是否恢复可用。 |
+| `apollo.cacheDir` | `/opt/data/` | Apollo配置中心本地缓存目录，用于存储拉取的配置文件。 |
+| `apollo.cluster` | `default` | Apollo集群名称，关联到特定的配置中心实例。 |
+| `apollo.meta` | `http://localhost:8080` | Apollo配置中心元数据中心地址，用于获取服务列表和配置信息。 |
+| `apollo.autoUpdateInjectedSpringProperties` | `true` | 是否自动更新注入到Spring Bean中的属性值，保持与配置中心同步。 |
+| `apollo.bootstrap.enabled` | `true` | 是否启用Apollo的启动引导加载功能，确保应用启动时能及时获取配置。 |
+| `apollo.bootstrap.namespaces` | `rpcman-app` | 启动引导加载的配置命名空间列表，优先加载这些命名空间的配置。 |
+| `apollo.bootstrap.eagerLoad.enabled` | `false` | 是否启用配置的急切加载模式，即在初始化阶段就加载所有配置而非按需加载。 |
+| `logging.level.root` | `error` | 全局日志级别，设定为`error`表示仅记录错误及以上级别的日志。 |
+| `logging.level.cn.ipman.rpc` | `info` | 特定包（`cn.ipman.rpc`）的日志级别，设定为`info`表示记录信息、警告、错误及以上级别的日志。 |
+
+
+### 关于Provider的配置
+| **配置项** | **值** | **功能说明** |
+| --- | --- | --- |
+| `server.port` | `8080` | Provider端服务监听端口，用于对外提供RPC服务。 |
+| `rpcman.zk.zkServer` | `localhost:2181` | ZooKeeper服务器地址，用于服务注册与发现、配置管理等分布式协调功能。 |
+| `rpcman.zk.zkRoot` | `rpcman` | 在ZooKeeper中使用的根节点路径，用于组织RPC相关的节点数据。 |
+| `rpcman.app.id` | `app1` | 应用ID，标识当前提供者所属的应用实例，参与服务注册与发现。 |
+| `rpcman.app.namespace` | `public` | 配置命名空间，用于区分不同环境或模块的配置数据。 |
+| `rpcman.app.env` | `dev` | 环境标识，如开发（dev）、测试（test）、生产（prod）等，影响资源配置和行为。 |
+| `rpcman.app.version` | `1.0` | 应用版本号，便于管理和区分不同版本的服务实例。 |
+| `rpcman.app.use-netty` | `true` | 是否使用Netty作为网络通信框架。此处设置为`true`，并将在`server.port`基础上增加1000作为实际开放端口。 |
+| `rpcman.provider.metas.dc` | `bj` | 数据中心标识（dc），用于区分服务所在的地理位置或数据中心。 |
+| `rpcman.provider.metas.gray` | `false` | 是否参与灰度发布，此处设置为`false`表示不参与灰度。 |
+| `rpcman.provider.metas.unit` | `B002` | 业务单元标识（unit），可能代表服务所属的业务线、团队或物理机房等。 |
+| `rpcman.provider.metas.tc` | `300` | 流量控制器参数，指定30秒内允许的最大访问次数（默认为20次）。 |
+| `apollo.cacheDir` | `/opt/data/` | Apollo配置中心本地缓存目录，用于存储拉取的配置文件。 |
+| `apollo.cluster` | `default` | Apollo集群名称，关联到特定的配置中心实例。 |
+| `apollo.meta` | `http://localhost:8080` | Apollo配置中心元数据中心地址，用于获取服务列表和配置信息。 |
+| `apollo.autoUpdateInjectedSpringProperties` | `true` | 是否自动更新注入到Spring Bean中的属性值，保持与配置中心同步。 |
+| `apollo.bootstrap.enabled` | `true` | 是否启用Apollo的启动引导加载功能，确保应用启动时能及时获取配置。 |
+| `apollo.bootstrap.namespaces` | `rpcman-app` | 启动引导加载的配置命名空间列表，优先加载这些命名空间的配置。 |
+| `apollo.bootstrap.eagerLoad.enabled` | `false` | 是否启用配置的急切加载模式，即在初始化阶段就加载所有配置而非按需加载。 |
+| `logging.level.root` | `info` | 全局日志级别，设定为`info`表示记录信息、警告、错误及以上级别的日志。 |
+| `logging.level.cn.ipman.rpc` | `debug` | 特定包（`cn.ipman.rpc`）的日志级别，设定为`debug`表示记录调试、信息、警告、错误及以上级别的日志。 |
+| `logging.level.io.netty` | `info` | Netty库的日志级别，设定为`info`表示记录信息、警告、错误及以上级别的日志。 |
+
+
 
 ### Provider Server IO框架的选择与性能的评估
 
@@ -80,17 +135,20 @@ Arthas分析：<br>
 然而，当我们从RPC框架设计与应用的角度重新审视，Tomcat与Netty在集成性和扩展性方面的差异则显得尤为重要。以下几点值得着重考量：<br>
 
 **扩展性** <br>
+
 Netty的优势在于其对多种协议的广泛支持。相较于专注于Web服务的Tomcat，Netty的设计初衷旨在构建高效、灵活的网络通信解决方案，使其能够轻松应对各种非HTTP协议的需求，如TCP、UDP、WebSocket等。这对于RPC框架而言尤为关键，因为RPC调用往往涉及定制化通信协议及编解码过程：<br>
 1. 非HTTP协议支持：当RPC框架采用非HTTP作为传输协议时，Netty凭借其丰富的协议库与高度可配置性，能够无缝对接，无需额外开发工作，确保通信效率与稳定性。
 2. 自定义编解码需求：在RPC场景中，传输的数据结构可能与HTTP Body的标准形式大相径庭，需要特定的序列化与反序列化逻辑。Netty提供了强大的编解码器体系，使得用户能够便捷地实现自定义编解码逻辑，以适应复杂的RPC数据交互需求。
 
 **集成性** <br>
+
 考虑到RPC框架的用户群体主要为业务开发人员，他们普遍采用Spring系列框架进行开发，而这些框架通常已内嵌了Tomcat容器。在这种背景下，选择Spring Boot（内嵌Tomcat）作为RPC框架的IO组件可能会引发一系列问题：<br>
 1. 版本冲突：若RPC框架强行引入特定版本的Tomcat，可能导致与项目中已存在的Spring版本不兼容，增加维护复杂度。 
 2. IOC冲突：Spring Boot对Bean的管理方式与RPC框架可能存在冲突，导致依赖注入（Dependency Injection, DI）混乱，影响应用的正常运行。 
 3. Servlet冲突：在RPC框架中直接使用Tomcat可能导致Servlet容器层面的冲突，例如路由规则、过滤器配置等，给应用部署与调试带来困扰。 
 鉴于上述集成性挑战，选用如Netty这样相对独立、轻量级的IO框架，更有利于降低与现有业务环境的摩擦，提升RPC框架对用户友好性与易用性。开发者可以更为顺畅地将RPC框架融入既有项目，减少不必要的适配工作与潜在风险，从而专注于核心业务逻辑的实现与优化。<br>
 综上所述，在设计RPC框架时，虽然Tomcat与Netty在底层NIO支持上存在共性，但Netty凭借其卓越的扩展性（尤其在支持非HTTP协议与自定义编解码方面）以及良好的集成性（避免与Spring生态产生冲突），成为构建高性能、易用RPC框架的理想IO组件选择。<br>
+
 
 ####  模拟全流程的单元测试代码覆盖率
 
