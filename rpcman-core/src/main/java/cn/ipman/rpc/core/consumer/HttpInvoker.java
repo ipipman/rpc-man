@@ -60,14 +60,12 @@ public interface HttpInvoker {
 
 
     @SneakyThrows
-    @SuppressWarnings("unused")
     static <T> T httpGet(String url, TypeReference<T> typeReference) {
         log.debug(" =====>>>>>> httpGet: " + url);
         String respJson = Default.get(url);
         log.debug(" =====>>>>>> respJson: " + respJson);
         return JSON.parseObject(respJson, typeReference);
     }
-
 
     /**
      * 使用HTTP POST方法发送请求，并将其解析为指定的Java类型。
