@@ -36,6 +36,11 @@ apollo:
     eagerLoad:
       enabled: false
 
+# 作者手写的注册中心:https://github.com/ipipman/registry-man
+registry-ipman:
+  enabled: true
+  servers: http://localhost:8484
+
 logging:
   level:
     root: info

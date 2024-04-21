@@ -38,6 +38,7 @@ public class NettyClient implements HttpInvoker {
     }
 
     @Override
+    @SuppressWarnings("all")
     public RpcResponse<?> post(RpcRequest rpcRequest, String url) {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
@@ -93,6 +94,16 @@ public class NettyClient implements HttpInvoker {
         } finally {
             workerGroup.shutdownGracefully();
         }
+    }
+
+    @Override
+    public String post(String requestString, String url) {
+        throw new UnsupportedOperationException("Currently in netty implementation, it is not supported yet");
+    }
+
+    @Override
+    public String get(String url) {
+        throw new UnsupportedOperationException("Currently in netty implementation, it is not supported yet");
     }
 
     public static void main(String[] args) {

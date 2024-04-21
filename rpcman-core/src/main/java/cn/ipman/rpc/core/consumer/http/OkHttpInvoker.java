@@ -53,4 +53,51 @@ public class OkHttpInvoker implements HttpInvoker {
             throw new RpcException(e);
         }
     }
+
+
+    /**
+     * 执行HTTP POST请求。
+     *
+     * @param requestString 请求体字符串
+     * @param url           请求的URL
+     * @return 返回HTTP响应体的字符串内容
+     */
+    @Override
+    public String post(String requestString, String url) {
+        log.debug(" ===> post  url = {}, requestString = {}", requestString, url);
+        Request request = new Request.Builder()
+                .url(url)
+                .post(RequestBody.create(requestString, JSON_TYPE))
+                .build();
+        try {
+            String respJson = Objects.requireNonNull(client.newCall(request).execute().body()).string();
+            log.debug(" ===> respJson = " + respJson);
+            return respJson;
+        } catch (Exception e) {
+            //log.error("okHttp post error:", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 执行HTTP GET请求。
+     *
+     * @param url 请求的URL
+     * @return 返回HTTP响应体的字符串内容
+     */
+    @Override
+    public String get(String url) {
+        log.debug(" ===> get url = " + url);
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .build();
+        try {
+            String respJson = Objects.requireNonNull(client.newCall(request).execute().body()).string();
+            log.debug(" ===> respJson = " + respJson);
+            return respJson;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
