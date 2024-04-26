@@ -19,13 +19,20 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Description for this class
+ * 用自己手写的注册中心
  *
+ * @link <a href="https://github.com/ipipman/registry-man">...</a>
  * @Author IpMan
  * @Date 2024/4/21 13:17
  */
 @Slf4j
 public class IpManRegistryCenter implements RegistryCenter {
+
+    private final static String REG_PATH = "/reg";
+    private final static String UN_REG_PATH = "/unreg";
+    private final static String FIND_ALL_PATH = "/findall";
+    private final static String VERSION_PATH = "/version";
+    private final static String RENEW_PATH = "/renew";
 
     @Value("${registry-ipman.servers}")
     String server;
@@ -47,19 +54,12 @@ public class IpManRegistryCenter implements RegistryCenter {
         // 定期将服务实例上报给注册中心, 避免被注册中心认为服务已死, 5s一次
         heathChecker = new IpManRegistryExecutor(5, 5, TimeUnit.SECONDS);
         heathChecker.executor(() -> RENEWS.keySet().forEach(
-                // 根据所有实例, 找到对应服务, 触发renew进行服务健康状态上报, 做探活
                 instance -> {
+                    // 根据所有实例, 找到对应服务, 触发renew进行服务健康状态上报, 做探活
                     try {
-                        StringBuilder sb = new StringBuilder();
-                        for (ServiceMeta service : RENEWS.get(instance)) {
-                            sb.append(service.toPath()).append(",");
-                        }
-                        String services = sb.toString();
-                        if (services.endsWith(","))
-                            services = services.substring(0, services.length() - 1);
-
+                        List<ServiceMeta> services = RENEWS.get(instance);
                         Long timestamp = HttpInvoker.httpPost(
-                                JSON.toJSONString(instance), reNewsPath(services), Long.class);
+                                JSON.toJSONString(instance), getReNewPath(services), Long.class);
                         log.info(" ====>>>> [IpMan-Registry] : renew instance {} for {} at {}", instance, services, timestamp);
                     } catch (Exception e) {
                         log.error(" ====>>>> [IpMan-Registry] call registry leader error");
@@ -100,7 +100,6 @@ public class IpManRegistryCenter implements RegistryCenter {
         return instances;
     }
 
-
     @Override
     public void subscribe(ServiceMeta service, ChangedListener listener) {
         // 每隔5s, 去注册中心获取最新版本号,如果版本号大于当前版本, 就从注册中心同步最新实例的信息
@@ -130,23 +129,44 @@ public class IpManRegistryCenter implements RegistryCenter {
 
     }
 
+
+
     private String regPath(ServiceMeta service) {
-        return server + "/reg?service=" + service.toPath();
+        return path(REG_PATH, service);
     }
 
     private String unRegPath(ServiceMeta service) {
-        return server + "/unreg?service=" + service.toPath();
+        return path(UN_REG_PATH, service);
     }
 
     private String findAllPath(ServiceMeta service) {
-        return server + "/findall?service=" + service.toPath();
+        return path(FIND_ALL_PATH, service);
     }
 
     private String versionPath(ServiceMeta service) {
-        return server + "/version?service=" + service.toPath();
+        return path(VERSION_PATH, service);
     }
 
-    private String reNewsPath(String services) {
-        return server + "/renews?services=" + services;
+    private String getReNewPath(List<ServiceMeta> serviceList){
+        return path(RENEW_PATH, serviceList);
+    }
+
+    private String path(final String context, List<ServiceMeta> serviceList) {
+        return server + context + "?services=" + args(serviceList);
+    }
+
+    private String path(String context, ServiceMeta service) {
+        return server + context + "?service=" + service.toPath();
+    }
+
+    private String args(List<ServiceMeta> serviceList){
+        StringBuilder sb = new StringBuilder();
+        for (ServiceMeta service : serviceList) {
+            sb.append(service.toPath()).append(",");
+        }
+        String services = sb.toString();
+        if (services.endsWith(","))
+            services = services.substring(0, services.length() - 1);
+        return services;
     }
 }
