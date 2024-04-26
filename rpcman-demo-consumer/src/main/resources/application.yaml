@@ -4,7 +4,7 @@ server:
 rpcman:
   #providers: http://localhost:8080,http://localhost:8081,http://localhost:8082
   zk:
-    enabled: true
+    enabled: false
     zkServer: localhost:2181
     zkRoot: rpcman
 
@@ -39,10 +39,10 @@ apollo:
 
 # 作者手写的注册中心:https://github.com/ipipman/registry-man
 registry-ipman:
-  enabled: false
+  enabled: true
   servers: http://localhost:8484
 
 logging:
   level:
     root: error
-    cn.ipman.rpc: info
+    cn.ipman.rpc: debug

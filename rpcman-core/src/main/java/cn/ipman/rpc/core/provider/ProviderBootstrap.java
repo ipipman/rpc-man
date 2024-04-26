@@ -80,7 +80,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
             this.instance = InstanceMeta.http(ip, Integer.parseInt(port)).addParams(providerProperties.getMetas());
         }
         // 启动注册中心连接,开始注册
-        this.rc.start();
+        // this.rc.start();
         this.skeleton.keySet().forEach(this::registerService);
 
     }
@@ -90,7 +90,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
         log.info(" ===> zk PreDestroy stop: " + this.skeleton);
         // 取消注册,关闭注册中心连接
         skeleton.keySet().forEach(this::unregisterService);
-        rc.stop();
+        // rc.stop();
     }
 
     private void unregisterService(String service) {

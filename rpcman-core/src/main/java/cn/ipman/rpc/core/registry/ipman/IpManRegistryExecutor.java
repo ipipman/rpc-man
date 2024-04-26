@@ -15,16 +15,37 @@ import java.util.concurrent.TimeUnit;
  * @Date 2024/4/21 20:12
  */
 @Slf4j
-public class IpManHeathChecker {
+public class IpManRegistryExecutor {
 
     // 注册中心探活间隔, 5s
-    final int interval = 5_000;
+    int initialDelay;
+    int delay;
+    TimeUnit unit;
 
     final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
     static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm:ss");
 
-    public void check(Callback callback) {
+
+    public IpManRegistryExecutor(int initialDelay, int delay, TimeUnit unit) {
+        this.initialDelay = initialDelay;
+        this.delay = delay;
+        this.unit = unit;
+    }
+
+    public void gracefulShutdown() {
+        executor.shutdown();
+        try {
+            executor.awaitTermination(1000, TimeUnit.MILLISECONDS);
+            if (!executor.isTerminated()) {
+                executor.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            // ignore
+        }
+    }
+
+    public void executor(Callback callback) {
         executor.scheduleWithFixedDelay(() -> {
             log.debug(" schedule to check ipman registry ... [{}]", DTF.format(LocalDateTime.now()));
             try {
@@ -32,9 +53,8 @@ public class IpManHeathChecker {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-        }, interval, interval, TimeUnit.MILLISECONDS);
+        }, initialDelay, delay, unit);
     }
-
 
     @FunctionalInterface
     public interface Callback {
