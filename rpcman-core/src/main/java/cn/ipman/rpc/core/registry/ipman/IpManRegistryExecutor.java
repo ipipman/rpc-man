@@ -1,5 +1,6 @@
 package cn.ipman.rpc.core.registry.ipman;
 
+import cn.ipman.rpc.core.registry.Callback;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
@@ -56,8 +57,4 @@ public class IpManRegistryExecutor {
         }, initialDelay, delay, unit);
     }
 
-    @FunctionalInterface
-    public interface Callback {
-        void call() throws Exception;
-    }
 }

@@ -4,6 +4,7 @@ import cn.ipman.rpc.core.api.RegistryCenter;
 import cn.ipman.rpc.core.consumer.HttpInvoker;
 import cn.ipman.rpc.core.meta.InstanceMeta;
 import cn.ipman.rpc.core.meta.ServiceMeta;
+import cn.ipman.rpc.core.registry.Callback;
 import cn.ipman.rpc.core.registry.ChangedListener;
 import cn.ipman.rpc.core.registry.Event;
 import com.alibaba.fastjson.JSON;
@@ -32,7 +33,7 @@ public class IpManRegistryCenter implements RegistryCenter {
     private final static String UN_REG_PATH = "/unreg";
     private final static String FIND_ALL_PATH = "/findall";
     private final static String VERSION_PATH = "/version";
-    private final static String RENEW_PATH = "/renew";
+    private final static String RENEW_PATH = "/renews";
 
     @Value("${registry-ipman.servers}")
     String server;
@@ -53,7 +54,18 @@ public class IpManRegistryCenter implements RegistryCenter {
         versionChecker = new IpManRegistryExecutor(1_000, 5_000, TimeUnit.MILLISECONDS);
         // 定期将服务实例上报给注册中心, 避免被注册中心认为服务已死, 5s一次
         heathChecker = new IpManRegistryExecutor(5, 5, TimeUnit.SECONDS);
-        heathChecker.executor(() -> RENEWS.keySet().forEach(
+        heathChecker.executor(providerChecker());
+    }
+
+    @Override
+    public void stop() {
+        log.info(" ====>>>> [IpMan-Registry] : stop with server: {}", server);
+        versionChecker.gracefulShutdown();
+        heathChecker.gracefulShutdown();
+    }
+
+    private Callback providerChecker() {
+        return () -> RENEWS.keySet().forEach(
                 instance -> {
                     // 根据所有实例, 找到对应服务, 触发renew进行服务健康状态上报, 做探活
                     try {
@@ -64,16 +76,9 @@ public class IpManRegistryCenter implements RegistryCenter {
                     } catch (Exception e) {
                         log.error(" ====>>>> [IpMan-Registry] call registry leader error");
                     }
-                }
-        ));
+                });
     }
 
-    @Override
-    public void stop() {
-        log.info(" ====>>>> [IpMan-Registry] : stop with server: {}", server);
-        versionChecker.gracefulShutdown();
-        heathChecker.gracefulShutdown();
-    }
 
     @Override
     public void register(ServiceMeta service, InstanceMeta instance) {
@@ -103,7 +108,11 @@ public class IpManRegistryCenter implements RegistryCenter {
     @Override
     public void subscribe(ServiceMeta service, ChangedListener listener) {
         // 每隔5s, 去注册中心获取最新版本号,如果版本号大于当前版本, 就从注册中心同步最新实例的信息
-        versionChecker.executor(() -> {
+        versionChecker.executor(consumerChecker(service, listener));
+    }
+
+    private Callback consumerChecker(ServiceMeta service, ChangedListener listener) {
+        return () -> {
             try {
                 // 获取注册中心, 最新的版本号
                 Long newVersion = HttpInvoker.httpGet(versionPath(service), Long.class);
@@ -121,14 +130,13 @@ public class IpManRegistryCenter implements RegistryCenter {
             } catch (Exception e) {
                 log.error(" ====>>>> [IpMan-Registry] call registry leader error");
             }
-        });
+        };
     }
 
     @Override
     public void unsubscribe() {
 
     }
-
 
 
     private String regPath(ServiceMeta service) {
@@ -147,7 +155,7 @@ public class IpManRegistryCenter implements RegistryCenter {
         return path(VERSION_PATH, service);
     }
 
-    private String getReNewPath(List<ServiceMeta> serviceList){
+    private String getReNewPath(List<ServiceMeta> serviceList) {
         return path(RENEW_PATH, serviceList);
     }
 
@@ -159,7 +167,7 @@ public class IpManRegistryCenter implements RegistryCenter {
         return server + context + "?service=" + service.toPath();
     }
 
-    private String args(List<ServiceMeta> serviceList){
+    private String args(List<ServiceMeta> serviceList) {
         StringBuilder sb = new StringBuilder();
         for (ServiceMeta service : serviceList) {
             sb.append(service.toPath()).append(",");
