@@ -7,8 +7,11 @@ GET http://localhost:8088/api/?id=101
 ### 用于测试探活
 GET http://localhost:8081/ports?ports=8082
 
-### 用于测试Apollo配置更新
+### 用于测试Apollo配置中心的更新
 GET http://localhost:8081/metas
+
+### 测试config-man配置中心, 作者:ipman
+GET http://localhost:8081/demo-config
 
 ### 获取用户信息
 POST http://192.168.31.232:9081/rpcman
@@ -29,3 +32,4 @@ Content-Type: application/json
   "methodSign": "findById@2_int_java.lang.String",
   "args": [200, "ipman"]
 }
+

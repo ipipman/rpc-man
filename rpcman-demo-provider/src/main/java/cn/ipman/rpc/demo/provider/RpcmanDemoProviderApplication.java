@@ -30,6 +30,7 @@ import java.util.Map;
 @Import({ProviderConfig.class, RegistryCenterConfig.class})
 @EnableApolloConfig
 @Slf4j
+//@EnableIpManConfig
 public class RpcmanDemoProviderApplication {
 
 //    @Bean
@@ -37,12 +38,27 @@ public class RpcmanDemoProviderApplication {
 //        return new ApolloChangedListener();
 //    }
 
+
     public static void main(String[] args) {
         SpringApplication.run(RpcmanDemoProviderApplication.class, args);
     }
 
     @Autowired
     private UserService userService;
+
+
+//    ----------  测试config-man配置中心, 作者:ipman ---------
+//    @Autowired
+//    private DemoConfig demoConfig;
+//
+//    @GetMapping("/demo-config")
+//    public String demo() {
+//        return "ipman.demo.a = " + demoConfig.getA() + ", \n" +
+//                "ipman.demo.b = " + demoConfig.getB() + ", \n" +
+//                "ipman.demo.c = " + demoConfig.getC() + ", \n";
+//    }
+//
+//    ----------  测试config-man配置中心, 作者:ipman ---------
 
     @RequestMapping("/ports")
     public RpcResponse<String> ports(@RequestParam("ports") String ports) {
