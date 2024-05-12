@@ -116,6 +116,12 @@
             <version>${apollo.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>io.github.ipipman</groupId>
+            <artifactId>config-client</artifactId>
+            <version>0.0.4</version>
+        </dependency>
+
     </dependencies>
 
 </project>

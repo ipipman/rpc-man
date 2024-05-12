@@ -1,5 +1,6 @@
 package cn.ipman.rpc.demo.provider;
 
+import cn.ipman.config.client.annotation.EnableIpManConfig;
 import cn.ipman.rpc.core.api.RpcRequest;
 import cn.ipman.rpc.core.api.RpcResponse;
 import cn.ipman.rpc.core.config.ProviderConfig;
@@ -28,16 +29,10 @@ import java.util.Map;
 @SpringBootApplication
 @RestController
 @Import({ProviderConfig.class, RegistryCenterConfig.class})
-@EnableApolloConfig
 @Slf4j
-//@EnableIpManConfig
+@EnableApolloConfig
+//@EnableIpManConfig // 参考: https://github.com/ipipman/config-man
 public class RpcmanDemoProviderApplication {
-
-//    @Bean
-//    ApolloChangedListener apolloChangedListener() {
-//        return new ApolloChangedListener();
-//    }
-
 
     public static void main(String[] args) {
         SpringApplication.run(RpcmanDemoProviderApplication.class, args);
@@ -45,20 +40,6 @@ public class RpcmanDemoProviderApplication {
 
     @Autowired
     private UserService userService;
-
-
-//    ----------  测试config-man配置中心, 作者:ipman ---------
-//    @Autowired
-//    private DemoConfig demoConfig;
-//
-//    @GetMapping("/demo-config")
-//    public String demo() {
-//        return "ipman.demo.a = " + demoConfig.getA() + ", \n" +
-//                "ipman.demo.b = " + demoConfig.getB() + ", \n" +
-//                "ipman.demo.c = " + demoConfig.getC() + ", \n";
-//    }
-//
-//    ----------  测试config-man配置中心, 作者:ipman ---------
 
     @RequestMapping("/ports")
     public RpcResponse<String> ports(@RequestParam("ports") String ports) {
