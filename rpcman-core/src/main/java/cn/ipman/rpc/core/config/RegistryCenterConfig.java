@@ -29,6 +29,10 @@ public class RegistryCenterConfig {
     }
 
 
+    /**
+     * 创建注册中心实例，registry-man, @linkUrl: <a href="https://github.com/ipipman/registry-man">...</a>
+     * @return RegistryCenter 注册中心实例
+     */
     @Bean(initMethod = "start", destroyMethod = "stop")
     @ConditionalOnProperty(prefix = "registry-ipman", value = "enabled", havingValue = "true")
     public RegistryCenter ipManRc() {

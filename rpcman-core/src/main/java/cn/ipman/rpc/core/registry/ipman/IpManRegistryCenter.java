@@ -111,6 +111,13 @@ public class IpManRegistryCenter implements RegistryCenter {
         versionChecker.executor(consumerChecker(service, listener));
     }
 
+    /**
+     * 生成一个回调函数，用于检查服务的版本并触发更新。
+     *
+     * @param service 服务元数据，包含服务的具体信息。
+     * @param listener 监听器，用于在版本变化时触发事件。
+     * @return Callback 返回一个回调函数，该函数在执行时会检查服务的版本是否有更新，并在有更新时触发监听器的事件。
+     */
     private Callback consumerChecker(ServiceMeta service, ChangedListener listener) {
         return () -> {
             try {
