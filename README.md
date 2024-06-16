@@ -115,7 +115,6 @@ RPC概念与价值：简述远程过程调用（RPC）的基本概念、工作�
 <img src="https://ipman-blog-1304583208.cos.ap-nanjing.myqcloud.com/rpcman/2024-03-24-153134.png" alt="image-20240324222246295" style="width:600px;"  />
 
 
-
 ### 2 使用SpringBoot作为Provider Server的性能
 
 压测工具： wrk <br>
